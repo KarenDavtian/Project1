@@ -1,0 +1,53 @@
+state = [["-", "-", "-"], ["-", "-", "-"], ["-", "-", "-"]]
+
+def print_state(state):
+    print("  0 1 2")
+    for i in range(len(state)):
+        row = state[i]
+        print(str(i) + " " + " ".join(row))
+
+def analyze_status(state, symbol):
+    for i in range(3):
+        if all(cell == symbol for cell in state[i]):
+            return True
+        if all(state[j][i] == symbol for j in range(3)):
+            return True
+
+    if state[0][0] == state[1][1] == state[2][2] == symbol:
+        return True
+    if state[0][2] == state[1][1] == state[2][0] == symbol:
+        return True
+
+    return False
+
+def make_move(i, j, player):
+    if state[i][j] != '-':
+        print("Клетка уже занята. Сделайте другой ход.")
+        return False
+    else:
+        state[i][j] = player
+        return True
+
+player = 'x'
+
+while True:
+    print_state(state)
+    move = input('Делай ход:')
+    move = move.split()
+    move = list(map(int, move))
+
+    while not make_move(*move, player):
+        move = input('Делайте другой ход:')
+        move = move.split()
+        move = list(map(int, move))
+
+    if analyze_status(state, player):
+        print_state(state)
+        print("Игрок", player, "победил!")
+        break
+    elif all(state[i][j] != '-' for i in range(3) for j in range(3)):
+        print_state(state)
+        print("Ничья!")
+        break
+
+    player = 'o' if player == 'x' else 'x'
